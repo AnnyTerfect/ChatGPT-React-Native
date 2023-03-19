@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
-import { Button, Dialog, IconButton, Portal, ProgressBar, Text, TextInput, View } from 'react-native-paper'
+import { Button, Dialog, IconButton, Portal, ProgressBar, Text, TextInput } from 'react-native-paper'
 
 const APIKeyDialog = forwardRef((props, ref) => {
     const [APIKey, setAPIKey] = useState('')

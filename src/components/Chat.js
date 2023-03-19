@@ -45,6 +45,9 @@ const Chat = (props) => {
               if (chat.content === "waiting...") {
                 chat.content = "";
               }
+              if (chat.content.trim() === '') {
+                chat.content = chat.content.trim();
+              }
               if (chat.role !== "user" && chat.id === id) {
                 return {
                   role: "assistant",
@@ -164,15 +167,17 @@ const Chat = (props) => {
                     display: "flex",
                     flexDirection: "row",
                     alignItems: "center",
+                    borderTopLeftRadius: chat.role === "user" ? 15 : 5,
+                    borderTopRightRadius: chat.role === "user" ? 5 : 15,
+                    borderBottomLeftRadius: 15,
+                    borderBottomRightRadius: 15,
                   },
                 ]}
               >
                 <Text
                   style={[
-                    chat.role !== "user"
-                      ? { color: "#FFF" }
-                      : { color: "#000" },
-                    { fontSize: 15 },
+                    chat.role !== "user" ? { color: "#FFF" } : { color: "#000" },
+                    styles.text,
                   ]}
                   selectable={true}
                 >
@@ -184,14 +189,15 @@ const Chat = (props) => {
           );
         })}
       </ScrollView>
-      <View style={{ height: 100, padding: 5 }}>
+      <View style={{ padding: 5 }}>
         <TextInput
           value={text}
-          style={{ flex: 1 }}
+          style={styles.textInput}
           multiline={true}
           mode="outlined"
           label="Message"
           placeholder="Type something"
+          textColor="#FFF"
           right={renderSendIcon()}
           onChangeText={(_text) => setText(_text)}
         />
@@ -208,7 +214,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     maxWidth: "80%",
   },
+  textInput: {
+    backgroundColor: "#222",
+    borderRadius: 5,
+    padding: 5,
+    fontSize: 16,
+    minHeight: 40,
+    maxHeight: 100,
+  },
 });
 
 export default Chat;
-
