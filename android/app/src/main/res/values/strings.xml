@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ChatGPT</string>
+    <string name="app_name_debug">ChatGPT Debug</string>
+    <string name="app_name_release">ChatGPT Release</string>
 </resources>
