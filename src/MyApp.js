@@ -1,17 +1,19 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {DrawerLayoutAndroid} from 'react-native';
-import {Appbar} from 'react-native-paper';
+import {Dimensions, DrawerLayoutAndroid, View} from 'react-native';
+import {Appbar, IconButton} from 'react-native-paper';
 import {Chat} from './components/Chat';
 import {APIKeyDialog} from './components/APIKeyDialog';
 import {Drawer} from './components/Drawer'
 import {getAPIKey, saveAPIKey, getActiveChatId, saveActiveChatId, getChatIds, commitDeleteChat, commitAddChat} from './utils/storage';
+import {TabView, SceneMap} from 'react-native-tab-view';
 
 const App = () => {
   const drawerRef = useRef(null);
   const dialogRef = useRef(null);
 
+  const [index, setIndex] = React.useState(0);
+
   const [APIKey, setAPIKey] = useState('');
-  const [activeChatId, setActiveChatId] = useState(null);
   const [chatIds, setChatIds] = useState([]);
 
   useEffect(() => {
@@ -27,7 +29,9 @@ const App = () => {
       const chatIds = await getChatIds();
       setChatIds(chatIds);
       const _activeChatId = await getActiveChatId();
-      setActiveChatId(_activeChatId ? _activeChatId : (chatIds.length > 0 ? chatIds[0] : null));
+      if (_activeChatId) {
+        setTimeout(() => { setIndex(chatIds.indexOf(_activeChatId)) })
+      }
     }
 
     _getAPIKey();
@@ -35,11 +39,15 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (chatIds.indexOf(activeChatId) === -1 && chatIds.length > 0) {
-      setActiveChatId(chatIds[0])
-    }
-    saveActiveChatId(activeChatId);
-  }, [activeChatId]);
+    console.log(`current activeChatId ${index}`)
+    console.log(`chatIds = ${chatIds}`)
+    console.log(`chatIds[index] = ${chatIds[index]}`)
+    chatIds[index] && saveActiveChatId(chatIds[index]);
+  }, [index]);
+
+  useEffect(() => {
+    console.log(chatIds)
+  }, [chatIds]);
 
   const _handleMore = () => {
     showDialog();
@@ -62,7 +70,8 @@ const App = () => {
       chatId = String(chatId)
       await commitAddChat(chatId);
       setChatIds((chatIds) => [...chatIds, chatId]);
-      setActiveChatId(chatId);
+      let _index = index
+      setTimeout(() => { setIndex(_index) }, 100)
     }
     _addChat()
   }
@@ -76,8 +85,8 @@ const App = () => {
     _deleteChat()
   }
 
-  const switchChat = chatId => {
-    setActiveChatId(chatId);
+  const switchChat = id => {
+    setIndex(chatIds.indexOf(id));
     closeDrawer();
   }
 
@@ -85,6 +94,32 @@ const App = () => {
     setAPIKey(_APIKey);
     saveAPIKey(_APIKey);
   };
+
+  const initialLayout = {width: Dimensions.get('window').width};
+  const renderScene = SceneMap(
+    Object.fromEntries([
+      ...chatIds.map(chatId => [
+        chatId, 
+        () => (
+          <Chat
+            chatId={chatId}
+            APIKey={APIKey}
+            deleteChat={() => deleteChat(chatId)}
+          />
+        )
+      ]),
+      ['add', () => (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <IconButton
+            icon="plus"
+            mode="contained"
+            size={80}
+            onPress={() => addChat(Math.ceil(Math.random() * 1000000))}
+          />
+        </View>
+      )]
+    ])
+  );
 
   return (
     <DrawerLayoutAndroid
@@ -94,7 +129,7 @@ const App = () => {
       renderNavigationView={() => (
         <Drawer
           closeDrawer={closeDrawer}
-          activeChatId={activeChatId}
+          activeChatId={index}
           chatIds={chatIds}
           addChat={(id) => addChat(id)}
           deleteChat={(id) => deleteChat(id)}
@@ -115,14 +150,22 @@ const App = () => {
         ref={dialogRef}
         onSubmitKey={handleSubmitKey}
       />
-      {chatIds.map(chatId => (
-        <Chat
-          key={chatId}
-          active={chatId === activeChatId}
-          APIKey={APIKey}
-          chatId={chatId}
-        />
-      ))}
+      <TabView
+        renderTabBar={() => null}
+        navigationState={{
+          index, 
+          routes: [
+            ...chatIds.map((chatId, i) => (
+              {key: chatId, title: String(chatId)}
+            )),
+            {key: 'add', title: 'add'}
+          ]
+        }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={initialLayout}
+        style={{ flex: 1 }}
+      />
     </DrawerLayoutAndroid>
   );
 };

@@ -6,7 +6,6 @@ import {getChatHistoryById, saveChatHistoryById} from '../utils/storage';
 const Chat = props => {
   const [text, setText] = React.useState('');
   const [msgs, setMsgs] = React.useState([]);
-  const [index, setIndex] = React.useState(-1);
   const [replies, setReplies] = React.useState([]);
   const [errors, setErrors] = React.useState([]);
   const scrollRef = useRef(null);
@@ -25,9 +24,6 @@ const Chat = props => {
     }
   };
 
-  const clearMsg = () => {
-    setMsgs([]);
-  };
 
   const scrollToEnd = () => {
     scrollRef.current.scrollToEnd({animated: true});
@@ -142,10 +138,10 @@ const Chat = props => {
   };
 
   return (
-    <View style={[{flex: 1}, props.active ? null : {display: 'none'}]}>
+    <View style={[{flex: 1}]}>
       <ScrollView ref={scrollRef}>
-        <Button mode="text" onPress={clearMsg}>
-          Clear
+        <Button mode="text" onPress={() => props.deleteChat(props.chatId)}>
+          Delete chat
         </Button>
         {msgs.map((chat, index) => {
           return (
