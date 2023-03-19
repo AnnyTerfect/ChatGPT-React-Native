@@ -69,4 +69,4 @@ const Drawer = (props) => {
   );
 };
 
-export {Drawer};
+export default Drawer;

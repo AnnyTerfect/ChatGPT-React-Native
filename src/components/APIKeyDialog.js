@@ -156,4 +156,4 @@ const APIKeyDialog = forwardRef((props, ref) => {
     );
 })
 
-export { APIKeyDialog }
+export default APIKeyDialog;
