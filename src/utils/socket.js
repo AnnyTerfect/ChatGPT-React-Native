@@ -68,7 +68,7 @@ ${json}
           if (body) {
             try {
               let json = JSON.parse(body);
-              let content = json.choices[0].delta.content.trim();
+              let content = json.choices[0].delta.content
               if (content) {
                 handleData(content);
               }
