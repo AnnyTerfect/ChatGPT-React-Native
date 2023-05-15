@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DrawerLayoutAndroid } from 'react-native';
-import Appbar from "./components/Appbar";
-import APIKeyDialog from "./components/APIKeyDialog";
-import Drawer from "./components/Drawer";
-import ChatTabView from "./components/ChatTabView";
+import Appbar from './components/Appbar';
+import APIKeyDialog from './components/APIKeyDialog';
+import Drawer from './components/Drawer';
+import ChatTabView from './components/ChatTabView';
 import {
   getAPIKey,
   saveAPIKey,
@@ -12,7 +12,7 @@ import {
   getChatIds,
   commitDeleteChat,
   commitAddChat,
-} from "./utils/storage";
+} from './utils/storage';
 
 const App = () => {
   const drawerRef = useRef(null);
@@ -20,7 +20,7 @@ const App = () => {
 
   const [index, setIndex] = React.useState(0);
 
-  const [APIKey, setAPIKey] = useState("");
+  const [APIKey, setAPIKey] = useState('');
   const [chatIds, setChatIds] = useState([]);
 
   const [addable, setAddable] = useState(true);
@@ -40,7 +40,7 @@ const App = () => {
       const _activeChatId = await getActiveChatId();
       if (_activeChatId) {
         setTimeout(() => {
-          setIndex((i) => i - 1);
+          setIndex(i => i - 1);
         }, 500);
       }
     };
@@ -65,13 +65,13 @@ const App = () => {
     drawerRef.current && drawerRef.current.closeDrawer();
   };
 
-  const addChat = (chatId) => {
+  const addChat = chatId => {
     const _addChat = async () => {
       chatId = String(chatId);
       await commitAddChat(chatId);
-      setChatIds((chatIds) => [...chatIds, chatId]);
+      setChatIds(cur => [...cur, chatId]);
       setTimeout(() => {
-        setIndex((i) => i - 1);
+        setIndex(i => i - 1);
         setAddable(true);
       }, 500);
     };
@@ -79,21 +79,21 @@ const App = () => {
     _addChat();
   };
 
-  const deleteChat = (chatId) => {
+  const deleteChat = chatId => {
     const _deleteChat = async () => {
       chatId = String(chatId);
       await commitDeleteChat(chatId);
-      setChatIds((chatIds) => chatIds.filter((id) => id !== chatId));
+      setChatIds(cur => cur.filter(id => id !== chatId));
     };
     _deleteChat();
   };
 
-  const switchChat = (id) => {
+  const switchChat = id => {
     setIndex(chatIds.indexOf(id));
     closeDrawer();
   };
 
-  const handleSubmitKey = (_APIKey) => {
+  const handleSubmitKey = _APIKey => {
     setAPIKey(_APIKey);
     saveAPIKey(_APIKey);
   };
@@ -108,12 +108,11 @@ const App = () => {
           closeDrawer={closeDrawer}
           activeChatId={index}
           chatIds={chatIds}
-          addChat={(id) => addChat(id)}
-          deleteChat={(id) => deleteChat(id)}
-          switchChat={(id) => switchChat(id)}
+          addChat={id => addChat(id)}
+          deleteChat={id => deleteChat(id)}
+          switchChat={id => switchChat(id)}
         />
-      )}
-    >
+      )}>
       <Appbar onPressMenu={openDrawer} onPressDots={showDialog} />
 
       <APIKeyDialog

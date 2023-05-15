@@ -1,13 +1,13 @@
-import TcpSocket from "react-native-tcp-socket";
-import { Buffer } from "buffer";
+import TcpSocket from 'react-native-tcp-socket';
+import { Buffer } from 'buffer';
 
 const post = (APIKey, msgs, handleData) => {
-  let headerLoaded = false
-  msgs = msgs.map((msg) => ({
+  let headerLoaded = false;
+  msgs = msgs.map(msg => ({
     role: msg.role,
     content: msg.content,
   }));
-  const json = JSON.stringify({
+  const jsonData = JSON.stringify({
     model: 'gpt-3.5-turbo',
     messages: msgs,
     stream: true,
@@ -21,10 +21,10 @@ const post = (APIKey, msgs, handleData) => {
     const data = `POST /v1/chat/completions HTTP/1.1
 Host: api.openai.com
 Content-Type: application/json
-Content-Length: ${new Buffer.from(json).length}
+Content-Length: ${new Buffer.from(jsonData).length}
 Authorization: Bearer ${APIKey}
 
-${json}
+${jsonData}
 `;
 
     // Create socket
@@ -49,34 +49,35 @@ ${json}
       } catch {}
 
       if (hasError) {
-        let error = JSON.parse(res).error
+        let error = JSON.parse(res).error;
         if (error.message) {
           reject(`${error.code}: ${error.message}`);
           return;
         }
       }
 
-      res.split('\n\n')
-        .filter(res => res.length > 2)
-        .filter(res => res.indexOf('data: ') >= 0)
-        .forEach((res) => {
-          if (res.split('data: ')[1].trim() === '[DONE]') {
+      res
+        .split('\n\n')
+        .filter(str => str.length > 2)
+        .filter(str => str.indexOf('data: ') >= 0)
+        .forEach(str => {
+          if (str.split('data: ')[1].trim() === '[DONE]') {
             resolve('OK');
             return;
           }
-          let body = res.split('data: ')[1];
+          let body = str.split('data: ')[1];
           if (body) {
             try {
               let json = JSON.parse(body);
-              let content = json.choices[0].delta.content
+              let content = json.choices[0].delta.content;
               if (content) {
                 handleData(content);
               }
             } catch (err) {
-              console.log(res);
+              console.log(str);
             }
           }
-      });
+        });
     });
 
     client.on('error', function (error) {
@@ -89,4 +90,4 @@ ${json}
   });
 };
 
-export {post};
+export { post };
