@@ -138,10 +138,10 @@ const APIKeyDialog = forwardRef((props, ref) => {
     <Portal>
       <Dialog visible={visible} onDismiss={hideDialog}>
         <Dialog.Title>Set API Key</Dialog.Title>
-        <Dialog.Content>
+        <Dialog.Content style={styles.subTitle}>
           <Text variant="bodyMedium">Input your API key here</Text>
         </Dialog.Content>
-        <Dialog.Content>
+        <Dialog.Content style={styles.textInput}>
           <TextInput
             value={APIKey}
             mode="outlined"
@@ -168,6 +168,12 @@ const APIKeyDialog = forwardRef((props, ref) => {
 });
 
 const styles = StyleSheet.create({
+  subTitle: {
+    paddingBottom: 10,
+  },
+  textInput: {
+    paddingBottom: 10,
+  },
   warningDialog: {
     display: 'flex',
     flexDirection: 'row',
@@ -175,6 +181,7 @@ const styles = StyleSheet.create({
   },
   warningText: { color: 'red' },
   succDialog: {
+    paddingBottom: 0,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
