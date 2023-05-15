@@ -77,7 +77,7 @@ const APIKeyDialog = forwardRef((props, ref) => {
                     <IconButton
                         icon="alert-circle"
                         iconColor="red"
-                    /><Text style={{ color: 'green' }} variant="bodyMedium">Network error</Text>
+                    /><Text style={{ color: 'red' }} variant="bodyMedium">Network error</Text>
                     </Dialog.Content>
                 </>
             )
