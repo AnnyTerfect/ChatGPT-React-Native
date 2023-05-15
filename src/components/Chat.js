@@ -148,21 +148,21 @@ const Chat = props => {
               style={[
                 styles.chatContainer,
                 chat.role === 'user'
-                  ? styles.chatContainer.user
-                  : styles.chatContainer.other,
+                  ? styles.chatContainerUser
+                  : styles.chatContainerOther,
               ]}>
               <View
                 style={[
                   styles.chat,
                   chat.role === 'user'
-                    ? styles.chat.user
+                    ? styles.chatUser
                     : chat.role === 'error'
-                    ? styles.chat.error
-                    : styles.chat.other,
+                    ? styles.chatError
+                    : styles.chatOther,
                 ]}>
                 <Text
                   style={[
-                    chat.role === 'user' ? styles.text.user : styles.text.other,
+                    chat.role === 'user' ? styles.textUser : styles.textOther,
                     styles.text,
                   ]}
                   selectable={true}>
@@ -196,12 +196,12 @@ const styles = StyleSheet.create({
   chatContainer: {
     display: 'flex',
     flexDirection: 'row',
-    user: {
-      justifyContent: 'flex-end',
-    },
-    other: {
-      justifyContent: 'flex-start',
-    },
+  },
+  chatContainerUser: {
+    justifyContent: 'flex-end',
+  },
+  chatContainerOther: {
+    justifyContent: 'flex-start',
   },
   chat: {
     padding: 10,
@@ -214,29 +214,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    user: {
-      backgroundColor: '#5ee486',
-      borderTopLeftRadius: 15,
-      borderTopRightRadius: 5,
-    },
-    error: {
-      backgroundColor: '#FF0000',
-      borderTopLeftRadius: 5,
-      borderTopRightRadius: 15,
-    },
-    other: {
-      backgroundColor: '#383838',
-      borderTopLeftRadius: 5,
-      borderTopRightRadius: 15,
-    },
   },
-  text: {
-    user: {
-      color: '#000',
-    },
-    other: {
-      color: '#FFF',
-    },
+  chatUser: {
+    backgroundColor: '#5ee486',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 5,
+  },
+  chatError: {
+    backgroundColor: '#FF0000',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 15,
+  },
+  chatOther: {
+    backgroundColor: '#383838',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 15,
+  },
+  textUser: {
+    color: '#000',
+  },
+  textOther: {
+    color: '#FFF',
   },
   textInputContainer: { padding: 5 },
   textInput: {
