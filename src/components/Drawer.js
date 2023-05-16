@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
 import { useTheme } from 'react-native-paper';
 
@@ -13,7 +13,7 @@ const Drawer = props => {
         theme.dark ? styles.containerDark : styles.containerLight,
       ]}>
       <Text style={styles.title}>Chat List</Text>
-      <View>
+      <ScrollView>
         {props.chatIds.map(chatId => (
           <View style={styles.chatContainer} key={Math.random()}>
             <Button
@@ -42,7 +42,7 @@ const Drawer = props => {
           }}>
           Add Chat
         </Button>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-start',
     },
   },
-  chatAddButton: { marginTop: 10 },
+  chatAddButton: { marginTop: 10, marginHorizontal: 10, marginBottom: 20 },
 });
 
 export default Drawer;
