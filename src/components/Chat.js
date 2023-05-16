@@ -37,7 +37,7 @@ const Chat = props => {
       scrollToEnd();
       saveChatHistoryById(props.chatId, msgs);
     }
-  }, [msgs, props.chatId]);
+  }, [msgs]);
 
   useEffect(() => {
     const send = async () => {
@@ -81,7 +81,7 @@ const Chat = props => {
       }
     };
     send();
-  }, [props.APIKey, sendBuf]);
+  }, [sendBuf]);
 
   useEffect(() => {
     if (errors.length > 0) {
@@ -119,7 +119,7 @@ const Chat = props => {
       }
     };
     _getChatHistoryById(props.chatId);
-  }, [msgs, props.chatId]);
+  }, []);
 
   const send = () => {
     const id = Math.random();

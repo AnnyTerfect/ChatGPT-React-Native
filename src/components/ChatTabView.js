@@ -38,7 +38,7 @@ const ChatTabView = props => {
         ],
       ]),
     );
-  }, [props]);
+  }, [props.chatIds, props.addable, props.APIKey]);
 
   return (
     <TabView
