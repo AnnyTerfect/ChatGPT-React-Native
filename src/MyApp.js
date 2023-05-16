@@ -110,7 +110,7 @@ const App = () => {
       renderNavigationView={() => (
         <Drawer
           closeDrawer={closeDrawer}
-          activeChatId={index}
+          activeChatId={chatIds[index]}
           chatIds={chatIds}
           addChat={id => addChat(id)}
           deleteChat={id => deleteChat(id)}
