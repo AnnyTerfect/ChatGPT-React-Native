@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { ScrollView, View, StyleSheet } from 'react-native';
 import { ActivityIndicator, Button, Text, TextInput } from 'react-native-paper';
-import { getChatHistoryById, saveChatHistoryById } from '../utils/storage';
-import { post } from '../utils/socket';
+import { getChatHistoryById, saveChatHistoryById } from '../../utils/storage';
+import { post } from '../../utils/socket';
 import { useTheme } from 'react-native-paper';
 
 const Chat = props => {

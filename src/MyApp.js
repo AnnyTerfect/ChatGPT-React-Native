@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DrawerLayoutAndroid, StyleSheet } from 'react-native';
-import Appbar from './components/Appbar';
-import APIKeyDialog from './components/APIKeyDialog';
-import Drawer from './components/Drawer';
-import ChatTabView from './components/ChatTabView';
+import Appbar from './components/App/Appbar';
+import APIKeyDialog from './components/Dialog/APIKeyDialog';
+import Drawer from './components/App/Drawer';
+import ChatTabView from './components/Chat/ChatTabView';
 import {
   getAPIKey,
   saveAPIKey,
