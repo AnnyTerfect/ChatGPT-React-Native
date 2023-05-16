@@ -1,15 +1,16 @@
-import { useMemo } from "react";
-import { TabView, SceneMap } from "react-native-tab-view";
-import { Dimensions, View } from "react-native";
-import { IconButton } from "react-native-paper";
-import Chat from "./Chat";
+import React from 'react';
+import { useMemo } from 'react';
+import { TabView, SceneMap } from 'react-native-tab-view';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { IconButton } from 'react-native-paper';
+import Chat from './Chat';
 
-const ChatTabView = (props) => {
+const ChatTabView = props => {
   const initialLayout = { width: Dimensions.get('window').width };
   const renderScene = useMemo(() => {
     return SceneMap(
       Object.fromEntries([
-        ...props.chatIds.map((chatId) => [
+        ...props.chatIds.map(chatId => [
           chatId,
           () => (
             <Chat
@@ -20,28 +21,24 @@ const ChatTabView = (props) => {
           ),
         ]),
         [
-          "add",
+          'add',
           () => (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View style={styles.center}>
               <IconButton
                 icon="plus"
                 mode="contained"
                 size={80}
                 disabled={!props.addable}
-                onPress={() => props.addChat(Math.ceil(Math.random() * 1000000))}
+                onPress={() =>
+                  props.addChat(Math.ceil(Math.random() * 1000000))
+                }
               />
             </View>
           ),
         ],
-      ])
+      ]),
     );
-  }, [props.chatIds, props.addable, props.APIKey]);
+  }, [props]);
 
   return (
     <TabView
@@ -53,15 +50,26 @@ const ChatTabView = (props) => {
             key: chatId,
             title: String(chatId),
           })),
-          { key: "add", title: "add" },
+          { key: 'add', title: 'add' },
         ],
       }}
       renderScene={renderScene}
       onIndexChange={props.setIndex}
       initialLayout={initialLayout}
-      style={{ flex: 1 }}
+      style={styles.tabView}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tabView: {
+    flex: 1,
+  },
+});
 
 export default ChatTabView;

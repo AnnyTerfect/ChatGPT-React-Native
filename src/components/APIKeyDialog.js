@@ -1,4 +1,6 @@
+import React from 'react';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   Button,
   Dialog,
@@ -50,14 +52,9 @@ const APIKeyDialog = forwardRef((props, ref) => {
     if (warning) {
       return (
         <>
-          <Dialog.Content
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
+          <Dialog.Content style={styles.warningDialog}>
             <IconButton icon="alert-circle" iconColor="red" />
-            <Text style={{ color: 'red' }} variant="bodyMedium">
+            <Text style={styles.warningText} variant="bodyMedium">
               Key is invalid
             </Text>
           </Dialog.Content>
@@ -70,14 +67,9 @@ const APIKeyDialog = forwardRef((props, ref) => {
     if (succ) {
       return (
         <>
-          <Dialog.Content
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
+          <Dialog.Content style={styles.succDialog}>
             <IconButton icon="check-circle" iconColor="green" />
-            <Text style={{ color: 'green' }} variant="bodyMedium">
+            <Text style={styles.succText} variant="bodyMedium">
               Key is valid
             </Text>
           </Dialog.Content>
@@ -90,14 +82,9 @@ const APIKeyDialog = forwardRef((props, ref) => {
     if (error) {
       return (
         <>
-          <Dialog.Content
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
+          <Dialog.Content style={styles.errorDialog}>
             <IconButton icon="alert-circle" iconColor="red" />
-            <Text style={{ color: 'red' }} variant="bodyMedium">
+            <Text style={styles.errorText} variant="bodyMedium">
               Network error
             </Text>
           </Dialog.Content>
@@ -116,7 +103,7 @@ const APIKeyDialog = forwardRef((props, ref) => {
     hideDialog();
   };
 
-  const testKey = APIKey => {
+  const testKey = key => {
     setSucc(false);
     setWarning(false);
     setError(false);
@@ -125,7 +112,7 @@ const APIKeyDialog = forwardRef((props, ref) => {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + APIKey,
+        Authorization: 'Bearer ' + key,
       },
     })
       .then(res => {
@@ -151,10 +138,10 @@ const APIKeyDialog = forwardRef((props, ref) => {
     <Portal>
       <Dialog visible={visible} onDismiss={hideDialog}>
         <Dialog.Title>Set API Key</Dialog.Title>
-        <Dialog.Content>
+        <Dialog.Content style={styles.subTitle}>
           <Text variant="bodyMedium">Input your API key here</Text>
         </Dialog.Content>
-        <Dialog.Content>
+        <Dialog.Content style={styles.textInput}>
           <TextInput
             value={APIKey}
             mode="outlined"
@@ -178,6 +165,34 @@ const APIKeyDialog = forwardRef((props, ref) => {
       </Dialog>
     </Portal>
   );
+});
+
+const styles = StyleSheet.create({
+  subTitle: {
+    paddingBottom: 10,
+  },
+  textInput: {
+    paddingBottom: 10,
+  },
+  warningDialog: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  warningText: { color: 'red' },
+  succDialog: {
+    paddingBottom: 0,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  succText: { color: 'green' },
+  errorDialog: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  errorText: { color: 'red' },
 });
 
 export default APIKeyDialog;

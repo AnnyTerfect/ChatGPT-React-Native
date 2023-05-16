@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from "react";
-import { ScrollView, View, StyleSheet } from "react-native";
-import { ActivityIndicator, Button, Text, TextInput } from "react-native-paper";
-import { getChatHistoryById, saveChatHistoryById } from "../utils/storage";
-import { post } from "../utils/socket";
+import React, { useEffect, useRef } from 'react';
+import { ScrollView, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, Button, Text, TextInput } from 'react-native-paper';
+import { getChatHistoryById, saveChatHistoryById } from '../utils/storage';
+import { post } from '../utils/socket';
 
-const Chat = (props) => {
-  const [text, setText] = React.useState("");
+const Chat = props => {
+  const [text, setText] = React.useState('');
   const [msgs, setMsgs] = React.useState([]);
   const [sendBuf, setSendBuf] = React.useState([]);
   const [errors, setErrors] = React.useState([]);
@@ -15,8 +15,8 @@ const Chat = (props) => {
     return <TextInput.Icon icon="send" onPress={() => send()} />;
   };
 
-  const renderWaiting = (chat) => {
-    if (chat.role === "waiting") {
+  const renderWaiting = chat => {
+    if (chat.role === 'waiting') {
       return (
         <>
           <ActivityIndicator animating={true} />
@@ -34,41 +34,41 @@ const Chat = (props) => {
       scrollToEnd();
       saveChatHistoryById(props.chatId, msgs);
     }
-  }, [msgs]);
+  }, [msgs, props.chatId]);
 
   useEffect(() => {
     const send = async () => {
-      const createHandleNewContent = (id) => {
-        const handleNewContent = (content) => {
-          setMsgs((currentMsgs) =>
-            currentMsgs.map((chat) => {
-              if (chat.content === "waiting...") {
-                chat.content = "";
+      const createHandleNewContent = id => {
+        const handleNewContent = content => {
+          setMsgs(currentMsgs =>
+            currentMsgs.map(chat => {
+              if (chat.content === 'waiting...') {
+                chat.content = '';
               }
               if (chat.content.trim() === '') {
                 chat.content = chat.content.trim();
               }
-              if (chat.role !== "user" && chat.id === id) {
+              if (chat.role !== 'user' && chat.id === id) {
                 return {
-                  role: "assistant",
-                  content: (chat.content ? chat.content : "") + content,
+                  role: 'assistant',
+                  content: (chat.content ? chat.content : '') + content,
                   id,
                 };
               }
               return chat;
-            })
+            }),
           );
         };
         return handleNewContent;
       };
 
       if (sendBuf.length > 0) {
-        sendBuf.forEach((buf) => {
+        sendBuf.forEach(buf => {
           const id = buf[buf.length - 1].id;
           post(props.APIKey, buf, createHandleNewContent(id))
             .then()
-            .catch((error) => {
-              setErrors((currentErrors) => [
+            .catch(error => {
+              setErrors(currentErrors => [
                 ...currentErrors,
                 { id, content: error },
               ]);
@@ -78,16 +78,16 @@ const Chat = (props) => {
       }
     };
     send();
-  }, [sendBuf]);
+  }, [props.APIKey, sendBuf]);
 
   useEffect(() => {
     if (errors.length > 0) {
-      errors.forEach((error) => {
-        setMsgs((currentMsgs) => {
-          return currentMsgs.map((chat) => {
+      errors.forEach(error => {
+        setMsgs(currentMsgs => {
+          return currentMsgs.map(chat => {
             if (chat.id === error.id) {
               return {
-                role: "error",
+                role: 'error',
                 content: error.content,
               };
             }
@@ -100,14 +100,14 @@ const Chat = (props) => {
   }, [errors]);
 
   useEffect(() => {
-    const _getChatHistoryById = async (id) => {
+    const _getChatHistoryById = async id => {
       let chatHistory = await getChatHistoryById(id);
       if (chatHistory && JSON.stringify(chatHistory) !== JSON.stringify(msgs)) {
-        chatHistory = chatHistory.map((chat) => {
-          if (chat.role === "waiting") {
+        chatHistory = chatHistory.map(chat => {
+          if (chat.role === 'waiting') {
             return {
-              role: "error",
-              content: "Error: Request timed out",
+              role: 'error',
+              content: 'Error: Request timed out',
             };
           }
           return chat;
@@ -116,29 +116,27 @@ const Chat = (props) => {
       }
     };
     _getChatHistoryById(props.chatId);
-  }, []);
+  }, [msgs, props.chatId]);
 
   const send = () => {
     const id = Math.random();
     setSendBuf([
       ...sendBuf,
       [
-        ...msgs.filter(
-          (msg) => msg.role === "user" || msg.role === "assistant"
-        ),
-        { role: "user", content: text, id },
+        ...msgs.filter(msg => msg.role === 'user' || msg.role === 'assistant'),
+        { role: 'user', content: text, id },
       ],
     ]);
-    setMsgs((currentMsgs) => [...currentMsgs, { role: "user", content: text }]);
-    setMsgs((currentMsgs) => [
+    setMsgs(currentMsgs => [...currentMsgs, { role: 'user', content: text }]);
+    setMsgs(currentMsgs => [
       ...currentMsgs,
-      { role: "waiting", content: "waiting...", id },
+      { role: 'waiting', content: 'waiting...', id },
     ]);
-    setText("");
+    setText('');
   };
 
   return (
-    <View style={[{ flex: 1 }]}>
+    <View style={styles.view}>
       <ScrollView ref={scrollRef}>
         <Button mode="text" onPress={() => props.deleteChat(props.chatId)}>
           Delete chat
@@ -147,40 +145,27 @@ const Chat = (props) => {
           return (
             <View
               key={index}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent:
-                  chat.role === "user" ? "flex-end" : "flex-start",
-              }}
-            >
+              style={[
+                styles.chatContainer,
+                chat.role === 'user'
+                  ? styles.chatContainerUser
+                  : styles.chatContainerOther,
+              ]}>
               <View
                 style={[
                   styles.chat,
-                  {
-                    backgroundColor:
-                      chat.role === "user"
-                        ? "#5ee486"
-                        : chat.role === "error"
-                        ? "#FF0000"
-                        : "#383838",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    borderTopLeftRadius: chat.role === "user" ? 15 : 5,
-                    borderTopRightRadius: chat.role === "user" ? 5 : 15,
-                    borderBottomLeftRadius: 15,
-                    borderBottomRightRadius: 15,
-                  },
-                ]}
-              >
+                  chat.role === 'user'
+                    ? styles.chatUser
+                    : chat.role === 'error'
+                    ? styles.chatError
+                    : styles.chatOther,
+                ]}>
                 <Text
                   style={[
-                    chat.role !== "user" ? { color: "#FFF" } : { color: "#000" },
+                    chat.role === 'user' ? styles.textUser : styles.textOther,
                     styles.text,
                   ]}
-                  selectable={true}
-                >
+                  selectable={true}>
                   {chat.content}
                 </Text>
                 {renderWaiting(chat)}
@@ -189,7 +174,7 @@ const Chat = (props) => {
           );
         })}
       </ScrollView>
-      <View style={{ padding: 5 }}>
+      <View style={styles.textInputContainer}>
         <TextInput
           value={text}
           style={styles.textInput}
@@ -199,7 +184,7 @@ const Chat = (props) => {
           placeholder="Type something"
           textColor="#FFF"
           right={renderSendIcon()}
-          onChangeText={(_text) => setText(_text)}
+          onChangeText={_text => setText(_text)}
         />
       </View>
     </View>
@@ -207,15 +192,53 @@ const Chat = (props) => {
 };
 
 const styles = StyleSheet.create({
+  view: { flex: 1 },
+  chatContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  chatContainerUser: {
+    justifyContent: 'flex-end',
+  },
+  chatContainerOther: {
+    justifyContent: 'flex-start',
+  },
   chat: {
     padding: 10,
     marginTop: 5,
     marginHorizontal: 10,
     borderRadius: 5,
-    maxWidth: "80%",
+    maxWidth: '80%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
   },
+  chatUser: {
+    backgroundColor: '#5ee486',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 5,
+  },
+  chatError: {
+    backgroundColor: '#FF0000',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 15,
+  },
+  chatOther: {
+    backgroundColor: '#383838',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 15,
+  },
+  textUser: {
+    color: '#000',
+  },
+  textOther: {
+    color: '#FFF',
+  },
+  textInputContainer: { padding: 5 },
   textInput: {
-    backgroundColor: "#222",
+    backgroundColor: '#222',
     borderRadius: 5,
     padding: 5,
     fontSize: 16,

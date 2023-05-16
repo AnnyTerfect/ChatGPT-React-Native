@@ -38,7 +38,7 @@ const getChatHistoryById = async id => {
   try {
     const chatHistory = await AsyncStorage.getItem('chatHistory');
     const chatHistoryJSON = JSON.parse(chatHistory);
-    const idChatHistory = chatHistoryJSON.filter(chat => chat.id === id)
+    const idChatHistory = chatHistoryJSON.filter(chat => chat.id === id);
     if (idChatHistory.length > 0 && idChatHistory[0].chatHistory) {
       return idChatHistory[0].chatHistory;
     }
@@ -59,7 +59,7 @@ const saveChatHistoryById = async (id, chatHistory) => {
     console.log('Error getting chatHistory');
     console.log(err);
   }
-  const newChatHistory = oldChatHistoryJSON.map((chat) => {
+  const newChatHistory = oldChatHistoryJSON.map(chat => {
     if (chat.id === id) {
       return {
         id,
@@ -67,7 +67,7 @@ const saveChatHistoryById = async (id, chatHistory) => {
       };
     }
     return chat;
-  })
+  });
   try {
     await AsyncStorage.setItem('chatHistory', JSON.stringify(newChatHistory));
   } catch (err) {
@@ -80,28 +80,28 @@ const getChatIds = async () => {
   try {
     const chatHistory = await AsyncStorage.getItem('chatHistory');
     if (chatHistory) {
-      return chatIds = JSON.parse(chatHistory).map((chat) => chat.id)
+      return JSON.parse(chatHistory).map(chat => chat.id);
     }
-    return []
+    return [];
   } catch (err) {
     console.log('Error getting chatIds');
-    console.log(err)
-    return []
+    console.log(err);
+    return [];
   }
-}
+};
 
 const commitAddChat = async chatId => {
   try {
     const chatHistory = await getChatHistory();
-    await AsyncStorage.setItem('chatHistory', JSON.stringify([
-      ...chatHistory,
-      {id: chatId, chatHistory: []},
-    ]));
+    await AsyncStorage.setItem(
+      'chatHistory',
+      JSON.stringify([...chatHistory, { id: chatId, chatHistory: [] }]),
+    );
   } catch (err) {
     console.log('Error adding chat');
     console.log(err);
   }
-}
+};
 
 const commitDeleteChat = async chatId => {
   try {
@@ -111,8 +111,8 @@ const commitDeleteChat = async chatId => {
   } catch (err) {
     console.log('Error deleting chat');
     console.log(err);
-  };
-}
+  }
+};
 
 const getActiveChatId = async () => {
   try {
@@ -122,7 +122,7 @@ const getActiveChatId = async () => {
     console.log('Error getting activeChatId');
     console.log(err);
   }
-}
+};
 
 const saveActiveChatId = async activeChatId => {
   try {
@@ -131,6 +131,17 @@ const saveActiveChatId = async activeChatId => {
     console.log('Error saving activeChatId');
     console.log(err);
   }
-}
+};
 
-export {getAPIKey, saveAPIKey, getChatHistory, getChatHistoryById, saveChatHistoryById, getChatIds, commitAddChat, commitDeleteChat, getActiveChatId, saveActiveChatId};
+export {
+  getAPIKey,
+  saveAPIKey,
+  getChatHistory,
+  getChatHistoryById,
+  saveChatHistoryById,
+  getChatIds,
+  commitAddChat,
+  commitDeleteChat,
+  getActiveChatId,
+  saveActiveChatId,
+};
