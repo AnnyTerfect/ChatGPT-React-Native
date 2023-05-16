@@ -164,9 +164,12 @@ const Chat = props => {
                     ? styles.chatUser
                     : chat.role === 'error'
                     ? styles.chatError
-                    : theme.dark
-                    ? styles.chatOtherDark
-                    : styles.chatOtherLight,
+                    : {
+                        ...styles.chatOther,
+                        ...(theme.dark
+                          ? styles.chatOtherDark
+                          : styles.chatOtherLight),
+                      },
                 ]}>
                 <Text
                   style={[
