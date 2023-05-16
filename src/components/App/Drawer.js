@@ -1,7 +1,21 @@
 import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
-import { Button, IconButton } from 'react-native-paper';
+import { Button, IconButton, List } from 'react-native-paper';
 import { useTheme } from 'react-native-paper';
+
+const chatIcon = props => <List.Icon {...props} icon="chat" />;
+const getDeleteButton = deleteChat => props =>
+  (
+    <IconButton
+      {...props}
+      icon="delete"
+      onPress={e => {
+        e.preventDefault();
+        e.stopPropagation();
+        deleteChat();
+      }}
+    />
+  );
 
 const Drawer = props => {
   const theme = useTheme();
@@ -14,25 +28,26 @@ const Drawer = props => {
       ]}>
       <Text style={styles.title}>Chat List</Text>
       <ScrollView>
-        {props.chatIds.map(chatId => (
-          <View style={styles.chatContainer} key={Math.random()}>
-            <Button
-              mode={props.activeChatId === chatId ? 'contained' : 'outlined'}
-              style={styles.chatButton}
+        <List.Section>
+          {props.chatIds.map(chatId => (
+            <List.Item
+              style={
+                props.activeChatId === chatId
+                  ? theme.dark
+                    ? styles.chatItemActiveDark
+                    : styles.chatItemActiveLight
+                  : {}
+              }
+              title={`chat${chatId}`}
+              left={chatIcon}
+              right={getDeleteButton(() => props.deleteChat(chatId))}
               onPress={() => {
                 props.switchChat(chatId);
-              }}>
-              chat{chatId}
-            </Button>
-            <IconButton
-              mode="icon"
-              icon="delete"
-              onPress={() => {
-                props.deleteChat(chatId);
               }}
+              key={Math.random()}
             />
-          </View>
-        ))}
+          ))}
+        </List.Section>
         <Button
           icon="plus"
           mode="elevated"
@@ -67,12 +82,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 10,
   },
-  chatButton: {
-    flex: 1,
-    fontSize: 18,
-    contentStyle: {
-      justifyContent: 'flex-start',
-    },
+  chatItemActiveLight: {
+    backgroundColor: '#DDD',
+  },
+  chatItemActiveDark: {
+    backgroundColor: '#444',
   },
   chatAddButton: { marginTop: 10, marginHorizontal: 10, marginBottom: 20 },
 });
