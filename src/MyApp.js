@@ -117,7 +117,11 @@ const App = () => {
           switchChat={id => switchChat(id)}
         />
       )}>
-      <Appbar onPressMenu={openDrawer} onPressDots={showDialog} />
+      <Appbar
+        onPressMenu={openDrawer}
+        onClickAddChat={id => addChat(id)}
+        onClickSetAPIKey={showDialog}
+      />
 
       <APIKeyDialog
         APIKey={APIKey}
