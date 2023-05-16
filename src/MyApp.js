@@ -17,7 +17,7 @@ import { useTheme } from 'react-native-paper';
 
 const App = () => {
   const theme = useTheme();
-  
+
   const drawerRef = useRef(null);
   const dialogRef = useRef(null);
 

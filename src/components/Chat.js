@@ -7,7 +7,7 @@ import { useTheme } from 'react-native-paper';
 
 const Chat = props => {
   const theme = useTheme();
-  
+
   const [text, setText] = React.useState('');
   const [msgs, setMsgs] = React.useState([]);
   const [sendBuf, setSendBuf] = React.useState([]);
@@ -37,6 +37,7 @@ const Chat = props => {
       scrollToEnd();
       saveChatHistoryById(props.chatId, msgs);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [msgs]);
 
   useEffect(() => {
@@ -81,6 +82,7 @@ const Chat = props => {
       }
     };
     send();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendBuf]);
 
   useEffect(() => {
@@ -119,6 +121,7 @@ const Chat = props => {
       }
     };
     _getChatHistoryById(props.chatId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const send = () => {
@@ -168,7 +171,6 @@ const Chat = props => {
                 <Text
                   style={[
                     chat.role === 'user' ? styles.textUser : styles.textOther,
-                    theme.dark ? styles.textDark : styles.textLight,
                   ]}
                   selectable={true}>
                   {chat.content}
@@ -241,12 +243,6 @@ const styles = StyleSheet.create({
   },
   textUser: {
     color: '#000',
-  },
-  textOtherDark: {
-    color: '#000',
-  },
-  textOtherDark: {
-    color: '#FFF',
   },
   textInputContainer: { padding: 5 },
   textInput: {

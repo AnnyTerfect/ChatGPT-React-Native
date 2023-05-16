@@ -7,10 +7,7 @@ export default function MyAppbar(props) {
     <Appbar.Header style={styles.header}>
       <Appbar.Action icon="menu" onPress={props.onPressMenu} />
       <Appbar.Content title="ChatGPT" />
-      <Appbar.Action
-        icon="dots-vertical"
-        onPress={props.onPressDots}
-      />
+      <Appbar.Action icon="dots-vertical" onPress={props.onPressDots} />
     </Appbar.Header>
   );
 }

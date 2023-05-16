@@ -38,6 +38,7 @@ const ChatTabView = props => {
         ],
       ]),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.chatIds, props.addable, props.APIKey]);
 
   return (
