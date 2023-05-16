@@ -184,10 +184,19 @@ const Chat = props => {
           );
         })}
       </ScrollView>
-      <View style={styles.textInputContainer}>
+      <View
+        style={[
+          styles.textInputContainer,
+          theme.dark
+            ? styles.textInputContainerDark
+            : styles.textInputContainerLight,
+        ]}>
         <TextInput
           value={text}
-          style={styles.textInput}
+          style={[
+            styles.textInput,
+            theme.dark ? styles.textInputDark : styles.textInputLight,
+          ]}
           multiline={true}
           mode="outlined"
           label="Message"
@@ -248,6 +257,8 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   textInputContainer: { padding: 5 },
+  textInputContainerLight: { backgroundColor: '#F2F2F2' },
+  textInputContainerDark: { backgroundColor: '#222' },
   textInput: {
     borderRadius: 5,
     padding: 5,
@@ -255,6 +266,8 @@ const styles = StyleSheet.create({
     minHeight: 40,
     maxHeight: 100,
   },
+  textInputLight: { backgroundColor: '#FFF' },
+  textInputDark: { backgroundColor: '#383838' },
 });
 
 export default Chat;

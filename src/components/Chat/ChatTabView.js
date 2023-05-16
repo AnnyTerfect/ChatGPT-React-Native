@@ -4,8 +4,11 @@ import { TabView, SceneMap } from 'react-native-tab-view';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import Chat from './Chat';
+import { useTheme } from 'react-native-paper';
 
 const ChatTabView = props => {
+  const theme = useTheme();
+
   const initialLayout = { width: Dimensions.get('window').width };
   const renderScene = useMemo(() => {
     return SceneMap(
@@ -57,7 +60,10 @@ const ChatTabView = props => {
       renderScene={renderScene}
       onIndexChange={props.setIndex}
       initialLayout={initialLayout}
-      style={styles.tabView}
+      style={[
+        styles.tabView,
+        theme.dark ? styles.tabViewDark : styles.tabViewLight,
+      ]}
     />
   );
 };
@@ -71,6 +77,10 @@ const styles = StyleSheet.create({
   tabView: {
     flex: 1,
   },
+  tabViewLight: {
+    backgroundColor: '#F4F4F4',
+  },
+  tabViewDark: { backgroundColor: '#1A1A1A' },
 });
 
 export default ChatTabView;
