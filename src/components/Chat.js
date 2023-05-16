@@ -3,8 +3,11 @@ import { ScrollView, View, StyleSheet } from 'react-native';
 import { ActivityIndicator, Button, Text, TextInput } from 'react-native-paper';
 import { getChatHistoryById, saveChatHistoryById } from '../utils/storage';
 import { post } from '../utils/socket';
+import { useTheme } from 'react-native-paper';
 
 const Chat = props => {
+  const theme = useTheme();
+  
   const [text, setText] = React.useState('');
   const [msgs, setMsgs] = React.useState([]);
   const [sendBuf, setSendBuf] = React.useState([]);
@@ -158,12 +161,14 @@ const Chat = props => {
                     ? styles.chatUser
                     : chat.role === 'error'
                     ? styles.chatError
-                    : styles.chatOther,
+                    : theme.dark
+                    ? styles.chatOtherDark
+                    : styles.chatOtherLight,
                 ]}>
                 <Text
                   style={[
                     chat.role === 'user' ? styles.textUser : styles.textOther,
-                    styles.text,
+                    theme.dark ? styles.textDark : styles.textLight,
                   ]}
                   selectable={true}>
                   {chat.content}
@@ -182,7 +187,6 @@ const Chat = props => {
           mode="outlined"
           label="Message"
           placeholder="Type something"
-          textColor="#FFF"
           right={renderSendIcon()}
           onChangeText={_text => setText(_text)}
         />
@@ -226,19 +230,26 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
   },
   chatOther: {
-    backgroundColor: '#383838',
     borderTopLeftRadius: 5,
     borderTopRightRadius: 15,
+  },
+  chatOtherLight: {
+    backgroundColor: '#FFF',
+  },
+  chatOtherDark: {
+    backgroundColor: '#383838',
   },
   textUser: {
     color: '#000',
   },
-  textOther: {
+  textOtherDark: {
+    color: '#000',
+  },
+  textOtherDark: {
     color: '#FFF',
   },
   textInputContainer: { padding: 5 },
   textInput: {
-    backgroundColor: '#222',
     borderRadius: 5,
     padding: 5,
     fontSize: 16,

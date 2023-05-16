@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { DrawerLayoutAndroid } from 'react-native';
+import { DrawerLayoutAndroid, StyleSheet } from 'react-native';
 import Appbar from './components/Appbar';
 import APIKeyDialog from './components/APIKeyDialog';
 import Drawer from './components/Drawer';
@@ -13,8 +13,11 @@ import {
   commitDeleteChat,
   commitAddChat,
 } from './utils/storage';
+import { useTheme } from 'react-native-paper';
 
 const App = () => {
+  const theme = useTheme();
+  
   const drawerRef = useRef(null);
   const dialogRef = useRef(null);
 
@@ -101,6 +104,7 @@ const App = () => {
   return (
     <DrawerLayoutAndroid
       ref={drawerRef}
+      style={theme.dark ? styles.layoutDark : styles.layoutLight}
       drawerWidth={300}
       drawerPosition="left"
       renderNavigationView={() => (
@@ -132,5 +136,12 @@ const App = () => {
     </DrawerLayoutAndroid>
   );
 };
+
+const styles = StyleSheet.create({
+  layoutLight: {
+    backgroundColor: '#EEE',
+  },
+  layoutDark: {},
+});
 
 export default App;

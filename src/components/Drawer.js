@@ -1,53 +1,63 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button, IconButton } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 
-const Drawer = props => (
-  <View style={styles.container}>
-    <Text style={styles.title}>Chat List</Text>
-    <View>
-      {props.chatIds.map(chatId => (
-        <View style={styles.chatContainer} key={Math.random()}>
-          <Button
-            mode={props.activeChatId === chatId ? 'contained' : 'outlined'}
-            style={styles.chatButton}
-            onPress={() => {
-              props.switchChat(chatId);
-            }}>
-            chat{chatId}
-          </Button>
-          <IconButton
-            style={styles.deleteButton}
-            mode="icon"
-            icon="delete"
-            onPress={() => {
-              props.deleteChat(chatId);
-            }}
-          />
-        </View>
-      ))}
-      <Button
-        icon="plus"
-        mode="elevated"
-        style={styles.chatAddButton}
-        onPress={() => {
-          props.addChat(Math.ceil(Math.random() * 100000));
-        }}>
-        Add Chat
-      </Button>
+const Drawer = props => {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={[
+        styles.container,
+        theme.dark ? styles.containerDark : styles.containerLight,
+      ]}>
+      <Text style={styles.title}>Chat List</Text>
+      <View>
+        {props.chatIds.map(chatId => (
+          <View style={styles.chatContainer} key={Math.random()}>
+            <Button
+              mode={props.activeChatId === chatId ? 'contained' : 'outlined'}
+              style={styles.chatButton}
+              onPress={() => {
+                props.switchChat(chatId);
+              }}>
+              chat{chatId}
+            </Button>
+            <IconButton
+              mode="icon"
+              icon="delete"
+              onPress={() => {
+                props.deleteChat(chatId);
+              }}
+            />
+          </View>
+        ))}
+        <Button
+          icon="plus"
+          mode="elevated"
+          style={styles.chatAddButton}
+          onPress={() => {
+            props.addChat(Math.ceil(Math.random() * 100000));
+          }}>
+          Add Chat
+        </Button>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  containerLight: {},
+  containerDark: {
     backgroundColor: '#333',
   },
   title: {
     margin: 20,
     marginTop: 40,
-    color: 'white',
     fontSize: 30,
   },
   chatContainer: {
@@ -60,14 +70,10 @@ const styles = StyleSheet.create({
   },
   chatButton: {
     flex: 1,
-    color: 'white',
     fontSize: 18,
     contentStyle: {
       justifyContent: 'flex-start',
     },
-  },
-  chatDeleteButton: {
-    backgroundColor: '#333',
   },
   chatAddButton: { marginTop: 10 },
 });
