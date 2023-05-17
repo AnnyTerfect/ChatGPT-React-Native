@@ -38,7 +38,7 @@ const Drawer = props => {
                     : styles.chatItemActiveLight
                   : {}
               }
-              title={chat.title ? chat.title : 'New Chat'}
+              title={chat.title || chat.chatHistory[0]?.content || 'New Chat'}
               left={chatIcon}
               right={getDeleteButton(() => props.deleteChat(chat.id))}
               onPress={() => {
