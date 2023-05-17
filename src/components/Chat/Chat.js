@@ -170,7 +170,11 @@ const Chat = props => {
                 ]}>
                 <Text
                   style={[
-                    chat.role === 'user' ? styles.textUser : styles.textOther,
+                    chat.role === 'user'
+                      ? styles.textUser
+                      : theme.dark
+                      ? styles.textOtherDark
+                      : {},
                   ]}
                   selectable={true}>
                   {chat.content}
@@ -252,6 +256,9 @@ const styles = StyleSheet.create({
   },
   textUser: {
     color: '#000',
+  },
+  textOtherDark: {
+    color: '#FFF',
   },
   textInputContainer: { padding: 5 },
   textInputContainerLight: { backgroundColor: '#F2F2F2' },
