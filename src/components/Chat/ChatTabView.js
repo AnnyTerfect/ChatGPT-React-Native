@@ -1,8 +1,7 @@
 import React from 'react';
 import { useMemo } from 'react';
 import { TabView, SceneMap } from 'react-native-tab-view';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { Dimensions, StyleSheet } from 'react-native';
 import Chat from './Chat';
 import { useTheme } from 'react-native-paper';
 
