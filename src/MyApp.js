@@ -78,6 +78,7 @@ const App = () => {
       setIndex(chatsRef.current.length - 1);
     }, 0);
     setChats(chatsRef.current);
+    closeDrawer();
     return chatId;
   };
 
