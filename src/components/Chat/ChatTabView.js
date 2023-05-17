@@ -15,7 +15,8 @@ const ChatTabView = props => {
           chat.id,
           () => (
             <Chat
-              chatId={chat.id}
+              id={chat.id}
+              chatHistory={chat.chatHistory}
               APIKey={props.APIKey}
               deleteChat={() => props.deleteChat(chat.id)}
             />
