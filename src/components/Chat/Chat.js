@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
-import { ActivityIndicator, Button, Text, TextInput } from 'react-native-paper';
-import { getChatHistoryById, saveChatHistoryById } from '../../utils/storage';
+import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ActivityIndicator, Button, TextInput } from 'react-native-paper';
+import { saveChatHistoryById } from '../../utils/storage';
 import { post } from '../../utils/socket';
 import { useTheme } from 'react-native-paper';
 
