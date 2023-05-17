@@ -19,6 +19,30 @@ const saveAPIKey = async APIKey => {
   }
 };
 
+const getChats = async () => {
+  try {
+    const chatHistory = await AsyncStorage.getItem('chatHistory');
+    const chatHistoryJSON = JSON.parse(chatHistory);
+    if (chatHistoryJSON && typeof chatHistoryJSON === 'object') {
+      return chatHistoryJSON;
+    }
+    return [];
+  } catch (err) {
+    console.log('Error getting chats');
+    console.log(err);
+    return [];
+  }
+};
+
+const saveChats = async chatHistory => {
+  try {
+    await AsyncStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+  } catch (err) {
+    console.log('Error saving chats');
+    console.log(err);
+  }
+};
+
 const getChatHistory = async () => {
   try {
     const chatHistory = await AsyncStorage.getItem('chatHistory');
@@ -136,6 +160,8 @@ const saveActiveChatId = async activeChatId => {
 export {
   getAPIKey,
   saveAPIKey,
+  getChats,
+  saveChats,
   getChatHistory,
   getChatHistoryById,
   saveChatHistoryById,

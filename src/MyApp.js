@@ -9,9 +9,8 @@ import {
   saveAPIKey,
   getActiveChatId,
   saveActiveChatId,
-  getChatIds,
-  commitDeleteChat,
-  commitAddChat,
+  getChats,
+  saveChats,
 } from './utils/storage';
 import { useTheme } from 'react-native-paper';
 
@@ -21,11 +20,11 @@ const App = () => {
   const [index, setIndex] = React.useState(0);
 
   const [APIKey, setAPIKey] = useState('');
-  const [chatIds, setChatIds] = useState([]);
+  const [chats, setChats] = useState([]);
 
   const drawerRef = useRef(null);
   const dialogRef = useRef(null);
-  const chatIdsRef = useRef(chatIds);
+  const chatsRef = useRef(chats);
 
   useEffect(() => {
     const _getAPIKey = async () => {
@@ -36,9 +35,9 @@ const App = () => {
         showDialog();
       }
     };
-    const _getChatIds = async () => {
-      const oldChatIds = await getChatIds();
-      setChatIds(oldChatIds);
+    const _getChats = async () => {
+      const oldChats = await getChats();
+      setChats(oldChats);
       const _activeChatId = await getActiveChatId();
       if (_activeChatId) {
         setTimeout(() => {
@@ -48,16 +47,17 @@ const App = () => {
     };
 
     _getAPIKey();
-    _getChatIds();
+    _getChats();
   }, []);
 
   useEffect(() => {
-    chatIds[index] && saveActiveChatId(chatIds[index]);
-  }, [chatIds, index]);
+    chats[index]?.id && saveActiveChatId(chats[index].id);
+  }, [chats, index]);
 
   useEffect(() => {
-    chatIdsRef.current = chatIds;
-  }, [chatIds]);
+    chatsRef.current = chats;
+    saveChats(chats);
+  }, [chats]);
 
   const showDialog = () => {
     dialogRef.current.showDialog();
@@ -71,30 +71,23 @@ const App = () => {
     drawerRef.current && drawerRef.current.closeDrawer();
   };
 
-  const addChat = chatId => {
-    const _addChat = async () => {
-      chatId = String(chatId);
-      await commitAddChat(chatId);
-      chatIdsRef.current = [...chatIdsRef.current, chatId];
-      setTimeout(() => {
-        setIndex(chatIdsRef.current.length - 1);
-      }, 0);
-      setChatIds(cur => [...cur, chatId]);
-    };
-    _addChat();
+  const addChat = () => {
+    const chatId = Math.random().toString(36).substring(7);
+    chatsRef.current = [...chatsRef.current, { id: chatId, chatHistory: [] }];
+    setTimeout(() => {
+      setIndex(chatsRef.current.length - 1);
+    }, 0);
+    setChats(chatsRef.current);
+    return chatId;
   };
 
   const deleteChat = chatId => {
-    const _deleteChat = async () => {
-      chatId = String(chatId);
-      await commitDeleteChat(chatId);
-      setChatIds(cur => cur.filter(id => id !== chatId));
-    };
-    _deleteChat();
+    chatId = String(chatId);
+    setChats(chats.filter(chat => chat.id !== chatId));
   };
 
   const switchChat = id => {
-    setIndex(chatIds.indexOf(id));
+    setIndex(chats.findIndex(chat => chat.id === id));
     closeDrawer();
   };
 
@@ -112,8 +105,8 @@ const App = () => {
       renderNavigationView={() => (
         <Drawer
           closeDrawer={closeDrawer}
-          activeChatId={chatIds[index]}
-          chatIds={chatIds}
+          activeChatId={chats[index]?.id}
+          chats={chats}
           addChat={id => addChat(id)}
           deleteChat={id => deleteChat(id)}
           switchChat={id => switchChat(id)}
@@ -131,7 +124,7 @@ const App = () => {
         onSubmitKey={handleSubmitKey}
       />
       <ChatTabView
-        chatIds={chatIds}
+        chatIds={chats.map(chat => chat.id)}
         APIKey={APIKey}
         index={index}
         setIndex={setIndex}

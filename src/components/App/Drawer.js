@@ -29,20 +29,20 @@ const Drawer = props => {
       <Text style={styles.title}>Chat List</Text>
       <ScrollView>
         <List.Section>
-          {props.chatIds.map(chatId => (
+          {props.chats.map(chat => (
             <List.Item
               style={
-                props.activeChatId === chatId
+                props.activeChatId === chat.id
                   ? theme.dark
                     ? styles.chatItemActiveDark
                     : styles.chatItemActiveLight
                   : {}
               }
-              title={`chat${chatId}`}
+              title={chat.title ? chat.title : 'New Chat'}
               left={chatIcon}
-              right={getDeleteButton(() => props.deleteChat(chatId))}
+              right={getDeleteButton(() => props.deleteChat(chat.id))}
               onPress={() => {
-                props.switchChat(chatId);
+                props.switchChat(chat.id);
               }}
               key={Math.random()}
             />
