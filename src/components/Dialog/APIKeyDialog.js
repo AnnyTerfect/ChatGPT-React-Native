@@ -136,7 +136,7 @@ const APIKeyDialog = forwardRef((props, ref) => {
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={hideDialog}>
+      <Dialog visible={visible} onDismiss={hideDialog} dismissable={false}>
         <Dialog.Title>Set API Key</Dialog.Title>
         <Dialog.Content style={styles.subTitle}>
           <Text variant="bodyMedium">Input your API key here</Text>
