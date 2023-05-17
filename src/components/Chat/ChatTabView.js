@@ -23,22 +23,6 @@ const ChatTabView = props => {
             />
           ),
         ]),
-        [
-          'add',
-          () => (
-            <View style={styles.center}>
-              <IconButton
-                icon="plus"
-                mode="contained"
-                size={80}
-                disabled={!props.addable}
-                onPress={() =>
-                  props.addChat(Math.ceil(Math.random() * 1000000))
-                }
-              />
-            </View>
-          ),
-        ],
       ]),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,7 +38,6 @@ const ChatTabView = props => {
             key: chatId,
             title: String(chatId),
           })),
-          { key: 'add', title: 'add' },
         ],
       }}
       renderScene={renderScene}

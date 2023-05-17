@@ -18,15 +18,14 @@ import { useTheme } from 'react-native-paper';
 const App = () => {
   const theme = useTheme();
 
-  const drawerRef = useRef(null);
-  const dialogRef = useRef(null);
-
   const [index, setIndex] = React.useState(0);
 
   const [APIKey, setAPIKey] = useState('');
   const [chatIds, setChatIds] = useState([]);
 
-  const [addable, setAddable] = useState(true);
+  const drawerRef = useRef(null);
+  const dialogRef = useRef(null);
+  const chatIdsRef = useRef(chatIds);
 
   useEffect(() => {
     const _getAPIKey = async () => {
@@ -56,6 +55,10 @@ const App = () => {
     chatIds[index] && saveActiveChatId(chatIds[index]);
   }, [chatIds, index]);
 
+  useEffect(() => {
+    chatIdsRef.current = chatIds;
+  }, [chatIds]);
+
   const showDialog = () => {
     dialogRef.current.showDialog();
   };
@@ -72,13 +75,13 @@ const App = () => {
     const _addChat = async () => {
       chatId = String(chatId);
       await commitAddChat(chatId);
-      setChatIds(cur => [...cur, chatId]);
+      chatIdsRef.current = [...chatIdsRef.current, chatId];
       setTimeout(() => {
-        setIndex(i => i - 1);
-        setAddable(true);
-      }, 500);
+        console.log(chatIdsRef.current);
+        setIndex(chatIdsRef.current.length - 1);
+      }, 0);
+      setChatIds(cur => [...cur, chatId]);
     };
-    setAddable(false);
     _addChat();
   };
 
@@ -131,7 +134,6 @@ const App = () => {
       <ChatTabView
         chatIds={chatIds}
         APIKey={APIKey}
-        addable={addable}
         index={index}
         setIndex={setIndex}
         addChat={addChat}
