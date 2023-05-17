@@ -88,6 +88,38 @@ def reactNativeArchitectures() {
     return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
+// Import JSON parser, place it at the top of the file
+import groovy.json.JsonSlurper
+
+// Read package.json and return `version` field
+def getVersionFromNpm() {
+    //  Read and parse package.json file from project root
+    def inputFile = new File("$rootDir/../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+
+
+    println ("Version Name: " +  packageJson["version"]);
+    // Return the version, you can get any value this way
+    return packageJson["version"]
+}
+
+// Convert version name to a version number
+def getNumericVersionFromNpm() {
+
+    def versionName =  getVersionFromNpm()
+    def parts = versionName.split("\\.")
+
+
+    int hotfix = parts[2] as int
+    int minor = parts[1] as int
+    int major = parts[0] as int
+
+    def numericVersion =  major*100000 + minor*1000 + hotfix
+    println('Version Code: ' + numericVersion)
+
+    return numericVersion
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -98,8 +130,8 @@ android {
         applicationId "com.chatgpt"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode getNumericVersionFromNpm()
+        versionName getVersionFromNpm()
     }
 
     splits {
