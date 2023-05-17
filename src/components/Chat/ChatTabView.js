@@ -1,5 +1,4 @@
-import React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { Dimensions, StyleSheet } from 'react-native';
 import Chat from './Chat';
@@ -12,20 +11,20 @@ const ChatTabView = props => {
   const renderScene = useMemo(() => {
     return SceneMap(
       Object.fromEntries([
-        ...props.chatIds.map(chatId => [
-          chatId,
+        ...props.chats.map(chat => [
+          chat.id,
           () => (
             <Chat
-              chatId={chatId}
+              chatId={chat.id}
               APIKey={props.APIKey}
-              deleteChat={() => props.deleteChat(chatId)}
+              deleteChat={() => props.deleteChat(chat.id)}
             />
           ),
         ]),
       ]),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.chatIds, props.addable, props.APIKey]);
+  }, [props.chats]);
 
   return (
     <TabView
@@ -33,9 +32,9 @@ const ChatTabView = props => {
       navigationState={{
         index: props.index,
         routes: [
-          ...props.chatIds.map((chatId, i) => ({
-            key: chatId,
-            title: String(chatId),
+          ...props.chats.map(chat => ({
+            key: chat.id,
+            title: String(chat.id),
           })),
         ],
       }}

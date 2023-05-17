@@ -40,9 +40,9 @@ const App = () => {
       setChats(oldChats);
       const _activeChatId = await getActiveChatId();
       if (_activeChatId) {
-        setTimeout(() => {
-          setIndex(i => i - 1);
-        }, 500);
+        setTimeout(() =>
+          setIndex(oldChats.findIndex(chat => chat.id === _activeChatId)),
+        );
       }
     };
 
@@ -124,7 +124,7 @@ const App = () => {
         onSubmitKey={handleSubmitKey}
       />
       <ChatTabView
-        chatIds={chats.map(chat => chat.id)}
+        chats={chats}
         APIKey={APIKey}
         index={index}
         setIndex={setIndex}
