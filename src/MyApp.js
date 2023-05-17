@@ -77,7 +77,6 @@ const App = () => {
       await commitAddChat(chatId);
       chatIdsRef.current = [...chatIdsRef.current, chatId];
       setTimeout(() => {
-        console.log(chatIdsRef.current);
         setIndex(chatIdsRef.current.length - 1);
       }, 0);
       setChatIds(cur => [...cur, chatId]);
