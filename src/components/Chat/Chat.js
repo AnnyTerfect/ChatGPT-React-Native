@@ -118,6 +118,10 @@ const Chat = props => {
   }, []);
 
   const send = () => {
+    if (text.trim() === '') {
+      return;
+    }
+
     const id = Math.random();
     setSendBuf([
       ...sendBuf,
