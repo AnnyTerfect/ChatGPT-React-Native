@@ -71,13 +71,12 @@ const App = () => {
     drawerRef.current && drawerRef.current.closeDrawer();
   };
 
-  const addChat = chatId => {
+  const addChat = () => {
     const _addChat = async () => {
-      chatId = String(chatId);
+      const chatId = Math.random().toString(36).slice(2);
       await commitAddChat(chatId);
       chatIdsRef.current = [...chatIdsRef.current, chatId];
       setTimeout(() => {
-        console.log(chatIdsRef.current);
         setIndex(chatIdsRef.current.length - 1);
       }, 0);
       setChatIds(cur => [...cur, chatId]);

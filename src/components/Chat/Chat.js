@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { ActivityIndicator, Button, TextInput } from 'react-native-paper';
-import { saveChatHistoryById } from '../../utils/storage';
+import { getChatHistoryById, saveChatHistoryById } from '../../utils/storage';
 import { post } from '../../utils/socket';
 import { useTheme } from 'react-native-paper';
 
@@ -9,7 +9,7 @@ const Chat = props => {
   const theme = useTheme();
 
   const [text, setText] = React.useState('');
-  const [msgs, setMsgs] = React.useState(props.chatHistory || []);
+  const [msgs, setMsgs] = React.useState([]);
   const [sendBuf, setSendBuf] = React.useState([]);
   const [errors, setErrors] = React.useState([]);
   const scrollRef = useRef(null);
@@ -35,9 +35,10 @@ const Chat = props => {
   useEffect(() => {
     if (msgs.length) {
       scrollToEnd();
-      saveChatHistoryById(props.id, msgs);
+      saveChatHistoryById(props.chatId, msgs);
     }
-  }, [props.id, msgs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [msgs]);
 
   useEffect(() => {
     const send = async () => {
@@ -104,16 +105,22 @@ const Chat = props => {
   }, [errors]);
 
   useEffect(() => {
-    const chatHistory = props.chatHistory.map(chat => {
-      if (chat.role === 'waiting') {
-        return {
-          role: 'error',
-          content: 'Error: Request timed out',
-        };
+    const _getChatHistoryById = async id => {
+      let chatHistory = await getChatHistoryById(id);
+      if (chatHistory && JSON.stringify(chatHistory) !== JSON.stringify(msgs)) {
+        chatHistory = chatHistory.map(chat => {
+          if (chat.role === 'waiting') {
+            return {
+              role: 'error',
+              content: 'Error: Request timed out',
+            };
+          }
+          return chat;
+        });
+        setMsgs(chatHistory);
       }
-      return chat;
-    });
-    setMsgs(chatHistory);
+    };
+    _getChatHistoryById(props.chatId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -141,7 +148,7 @@ const Chat = props => {
   return (
     <View style={styles.view}>
       <ScrollView ref={scrollRef}>
-        <Button mode="text" onPress={() => props.deleteChat(props.id)}>
+        <Button mode="text" onPress={() => props.deleteChat(props.chatId)}>
           Delete chat
         </Button>
         {msgs.map((chat, index) => {

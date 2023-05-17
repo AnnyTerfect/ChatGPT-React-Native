@@ -11,21 +11,20 @@ const ChatTabView = props => {
   const renderScene = useMemo(() => {
     return SceneMap(
       Object.fromEntries([
-        ...props.chats.map(chat => [
-          chat.id,
+        ...props.chatIds.map(chatId => [
+          chatId,
           () => (
             <Chat
-              id={chat.id}
-              chatHistory={chat.chatHistory}
+              chatId={chatId}
               APIKey={props.APIKey}
-              deleteChat={() => props.deleteChat(chat.id)}
+              deleteChat={() => props.deleteChat(chatId)}
             />
           ),
         ]),
       ]),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.chats]);
+  }, [props.chatIds]);
 
   return (
     <TabView
@@ -33,9 +32,9 @@ const ChatTabView = props => {
       navigationState={{
         index: props.index,
         routes: [
-          ...props.chats.map(chat => ({
-            key: chat.id,
-            title: String(chat.id),
+          ...props.chatIds.map(chatId => ({
+            key: chatId,
+            title: String(chatId),
           })),
         ],
       }}
