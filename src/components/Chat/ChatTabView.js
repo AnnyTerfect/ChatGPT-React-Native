@@ -69,7 +69,7 @@ const ChatTabView = forwardRef((props, ref) => {
       title: chats[index]?.chatHistory[0]?.content,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index]);
+  }, [chats, index]);
 
   useEffect(() => {
     chatsRef.current = chats;
