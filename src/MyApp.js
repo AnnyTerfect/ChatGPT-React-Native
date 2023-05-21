@@ -18,18 +18,18 @@ import { useTheme } from 'react-native-paper';
 const App = () => {
   const theme = useTheme();
 
-  const [index, setIndex] = React.useState(0);
-
   const [APIKey, setAPIKey] = useState('');
   const [chatIds, setChatIds] = useState([]);
 
+  const appBarRef = useRef(null);
   const drawerRef = useRef(null);
+  const drawerLayoutRef = useRef(null);
+  const tabViewRef = useRef(null);
   const dialogRef = useRef(null);
   const chatIdsRef = useRef(chatIds);
 
   useEffect(() => {
-    const _getAPIKey = async () => {
-      const _APIKey = await getAPIKey();
+    getAPIKey().then(_APIKey => {
       if (_APIKey) {
         setAPIKey(_APIKey);
       } else {
@@ -64,11 +64,11 @@ const App = () => {
   };
 
   const openDrawer = () => {
-    drawerRef.current && drawerRef.current.openDrawer();
+    drawerLayoutRef.current && drawerLayoutRef.current.openDrawer();
   };
 
   const closeDrawer = () => {
-    drawerRef.current && drawerRef.current.closeDrawer();
+    drawerLayoutRef.current && drawerLayoutRef.current.closeDrawer();
   };
 
   const addChat = () => {
@@ -103,14 +103,24 @@ const App = () => {
     saveAPIKey(_APIKey);
   };
 
+  const handleUpdateTitle = chats => {
+    drawerRef.current.setChats(chats);
+  };
+
+  const handleUpdateActiveChat = chat => {
+    drawerRef.current.setActiveChatId(chat.id);
+    appBarRef.current.setTitle(chat.title);
+  };
+
   return (
     <DrawerLayoutAndroid
-      ref={drawerRef}
+      ref={drawerLayoutRef}
       style={theme.dark ? styles.layoutDark : styles.layoutLight}
       drawerWidth={300}
       drawerPosition="left"
       renderNavigationView={() => (
         <Drawer
+          ref={drawerRef}
           closeDrawer={closeDrawer}
           activeChatId={chatIds[index]}
           chatIds={chatIds}
@@ -120,6 +130,7 @@ const App = () => {
         />
       )}>
       <Appbar
+        ref={appBarRef}
         onPressMenu={openDrawer}
         onClickAddChat={id => addChat(id)}
         onClickSetAPIKey={showDialog}
@@ -133,10 +144,8 @@ const App = () => {
       <ChatTabView
         chatIds={chatIds}
         APIKey={APIKey}
-        index={index}
-        setIndex={setIndex}
-        addChat={addChat}
-        deleteChat={deleteChat}
+        onUpdateTitle={handleUpdateTitle}
+        onUpdateActiveChat={handleUpdateActiveChat}
       />
     </DrawerLayoutAndroid>
   );

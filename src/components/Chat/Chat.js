@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import { ActivityIndicator, Button, TextInput } from 'react-native-paper';
 import { getChatHistoryById, saveChatHistoryById } from '../../utils/storage';
@@ -31,6 +31,11 @@ const Chat = props => {
   const scrollToEnd = () => {
     scrollRef.current.scrollToEnd({ animated: true });
   };
+
+  useEffect(() => {
+    props.onUpdateChatHistory(msgs);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [msgs]);
 
   useEffect(() => {
     if (msgs.length) {

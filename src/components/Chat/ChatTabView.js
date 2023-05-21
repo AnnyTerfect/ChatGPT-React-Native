@@ -1,10 +1,35 @@
-import React, { useMemo } from 'react';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
+import { TabView } from 'react-native-tab-view';
 import { Dimensions, StyleSheet } from 'react-native';
 import Chat from './Chat';
+import {
+  getActiveChatId,
+  getChats,
+  saveActiveChatId,
+  saveChats,
+} from '../../utils/storage';
 import { useTheme } from 'react-native-paper';
 
-const ChatTabView = props => {
+const initialLayout = { width: Dimensions.get('window').width };
+
+const debounce = (func, wait) => {
+  let timeout;
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), wait);
+  };
+};
+
+const debouncedSaveChats = debounce(saveChats, 1000);
+
+const ChatTabView = forwardRef((props, ref) => {
   const theme = useTheme();
 
   const initialLayout = { width: Dimensions.get('window').width };
@@ -30,7 +55,7 @@ const ChatTabView = props => {
     <TabView
       renderTabBar={() => null}
       navigationState={{
-        index: props.index,
+        index: index,
         routes: [
           ...props.chatIds.map(chatId => ({
             key: chatId,
@@ -39,7 +64,7 @@ const ChatTabView = props => {
         ],
       }}
       renderScene={renderScene}
-      onIndexChange={props.setIndex}
+      onIndexChange={setIndex}
       initialLayout={initialLayout}
       style={[
         styles.tabView,
@@ -47,7 +72,7 @@ const ChatTabView = props => {
       ]}
     />
   );
-};
+});
 
 const styles = StyleSheet.create({
   center: {
