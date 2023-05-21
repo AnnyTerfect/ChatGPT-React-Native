@@ -32,24 +32,101 @@ const debouncedSaveChats = debounce(saveChats, 1000);
 const ChatTabView = forwardRef((props, ref) => {
   const theme = useTheme();
 
-  const initialLayout = { width: Dimensions.get('window').width };
-  const renderScene = useMemo(() => {
-    return SceneMap(
-      Object.fromEntries([
-        ...props.chatIds.map(chatId => [
-          chatId,
-          () => (
-            <Chat
-              chatId={chatId}
-              APIKey={props.APIKey}
-              deleteChat={() => props.deleteChat(chatId)}
-            />
-          ),
-        ]),
-      ]),
-    );
+  useImperativeHandle(ref, () => ({
+    addChat,
+    deleteChat,
+    switchChat,
+  }));
+
+  const [index, setIndex] = React.useState(0);
+  const [chats, setChats] = useState([]);
+
+  const chatsRef = useRef(chats);
+
+  const debouncedSetChats = debounce(setChats, 1000);
+
+  useEffect(() => {
+    getChats()
+      .then(setChats)
+      .then(getActiveChatId)
+      .then(_activeChatId => {
+        if (_activeChatId) {
+          setTimeout(() =>
+            setIndex(chats.findIndex(chat => chat.id === _activeChatId)),
+          );
+        }
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.chatIds]);
+  }, []);
+
+  useEffect(() => {
+    chats[index]?.id && saveActiveChatId(chats[index].id);
+  }, [chats, index]);
+
+  useEffect(() => {
+    props.onUpdateActiveChat({
+      id: chats[index]?.id,
+      title: chats[index]?.chatHistory[0]?.content,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  useEffect(() => {
+    chatsRef.current = chats;
+    debouncedSaveChats(chats);
+    props.onUpdateTitle(chats);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chats]);
+
+  const addChat = () => {
+    const chatId = Math.random().toString(36).substring(7);
+    chatsRef.current = [...chatsRef.current, { id: chatId, chatHistory: [] }];
+    setTimeout(() => {
+      setIndex(chatsRef.current.length - 1);
+    }, 0);
+    setChats(chatsRef.current);
+    return chatId;
+  };
+
+  const deleteChat = chatId => {
+    chatId = String(chatId);
+    setChats(chats.filter(chat => chat.id !== chatId));
+  };
+
+  const switchChat = id => {
+    setIndex(chats.findIndex(chat => chat.id === id));
+  };
+
+  const handleUpdateTitle = () => {
+    props.onUpdateTitle(chats);
+  };
+
+  const handleUpdateChatHistory = (id, chatHistory) => {
+    debouncedSetChats(_chats =>
+      _chats.map(chat => {
+        if (chat.id === id) {
+          return { ...chat, chatHistory };
+        }
+        return chat;
+      }),
+    );
+  };
+
+  const renderScene = ({ route }) => {
+    const chat = chats.find(_chat => _chat.id === route.key);
+    return (
+      <Chat
+        id={chat.id}
+        chatHistory={chat.chatHistory}
+        APIKey={props.APIKey}
+        deleteChat={() => deleteChat(chat.id)}
+        onUpdateTitle={handleUpdateTitle}
+        onUpdateChatHistory={chatHistory =>
+          handleUpdateChatHistory(chat.id, chatHistory)
+        }
+      />
+    );
+  };
 
   return (
     <TabView
@@ -57,9 +134,9 @@ const ChatTabView = forwardRef((props, ref) => {
       navigationState={{
         index: index,
         routes: [
-          ...props.chatIds.map(chatId => ({
-            key: chatId,
-            title: String(chatId),
+          ...chats.map(chat => ({
+            key: chat.id,
+            title: String(chat.id),
           })),
         ],
       }}

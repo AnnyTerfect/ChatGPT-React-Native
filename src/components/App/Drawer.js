@@ -37,20 +37,20 @@ const Drawer = forwardRef((props, ref) => {
       <Text style={styles.title}>Chat List</Text>
       <ScrollView>
         <List.Section>
-          {props.chatIds.map(chatId => (
+          {chats.map(chat => (
             <List.Item
               style={
-                props.activeChatId === chatId
+                activeChatId === chat.id
                   ? theme.dark
                     ? styles.chatItemActiveDark
                     : styles.chatItemActiveLight
                   : {}
               }
-              title={'New Chat'}
+              title={chat.title || chat.chatHistory[0]?.content || 'New Chat'}
               left={chatIcon}
-              right={getDeleteButton(() => props.deleteChat(chatId))}
+              right={getDeleteButton(() => props.deleteChat(chat.id))}
               onPress={() => {
-                props.switchChat(chatId);
+                props.switchChat(chat.id);
               }}
               key={Math.random()}
             />
