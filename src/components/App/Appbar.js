@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { StyleSheet } from 'react-native';
 import { Appbar, Menu, IconButton } from 'react-native-paper';
 
-export default function MyAppbar(props) {
+const AppBar = forwardRef((props, ref) => {
+  const [title, setTitle] = useState('ChatGPT');
   const [showMenu, setShowMenu] = useState(false);
 
   const openMenu = () => setShowMenu(true);
 
   const closeMenu = () => setShowMenu(false);
+
+  useImperativeHandle(ref, () => ({
+    setTitle,
+  }));
 
   const handleClickAddChat = () => {
     closeMenu();
@@ -22,7 +27,7 @@ export default function MyAppbar(props) {
   return (
     <Appbar.Header style={styles.header}>
       <Appbar.Action icon="menu" onPress={props.onPressMenu} />
-      <Appbar.Content title="ChatGPT" />
+      <Appbar.Content title={title} />
       <IconButton icon="plus-circle" onPress={handleClickAddChat} />
       <Menu
         visible={showMenu}
@@ -36,8 +41,10 @@ export default function MyAppbar(props) {
       </Menu>
     </Appbar.Header>
   );
-}
+});
 
 const styles = StyleSheet.create({
   header: {},
 });
+
+export default AppBar;

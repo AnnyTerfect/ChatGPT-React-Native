@@ -12,6 +12,7 @@ const App = () => {
 
   const [APIKey, setAPIKey] = useState('');
 
+  const appBarRef = useRef(null);
   const drawerRef = useRef(null);
   const drawerLayoutRef = useRef(null);
   const tabViewRef = useRef(null);
@@ -62,6 +63,11 @@ const App = () => {
     drawerRef.current.setChats(chats);
   };
 
+  const handleUpdateActiveChat = chat => {
+    drawerRef.current.setActiveChatId(chat.id);
+    appBarRef.current.setTitle(chat.title);
+  };
+
   return (
     <DrawerLayoutAndroid
       ref={drawerLayoutRef}
@@ -78,6 +84,7 @@ const App = () => {
         />
       )}>
       <Appbar
+        ref={appBarRef}
         onPressMenu={openDrawer}
         onClickAddChat={id => addChat(id)}
         onClickSetAPIKey={showDialog}
@@ -92,6 +99,7 @@ const App = () => {
         ref={tabViewRef}
         APIKey={APIKey}
         onUpdateTitle={handleUpdateTitle}
+        onUpdateActiveChat={handleUpdateActiveChat}
       />
     </DrawerLayoutAndroid>
   );

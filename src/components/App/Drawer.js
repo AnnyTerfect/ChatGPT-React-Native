@@ -21,9 +21,11 @@ const Drawer = forwardRef((props, ref) => {
   const theme = useTheme();
 
   const [chats, setChats] = React.useState([]);
+  const [activeChatId, setActiveChatId] = React.useState(null);
 
   useImperativeHandle(ref, () => ({
     setChats,
+    setActiveChatId,
   }));
 
   return (
@@ -38,7 +40,7 @@ const Drawer = forwardRef((props, ref) => {
           {chats.map(chat => (
             <List.Item
               style={
-                props.activeChatId === chat.id
+                activeChatId === chat.id
                   ? theme.dark
                     ? styles.chatItemActiveDark
                     : styles.chatItemActiveLight

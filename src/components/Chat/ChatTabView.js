@@ -64,9 +64,18 @@ const ChatTabView = forwardRef((props, ref) => {
   }, [chats, index]);
 
   useEffect(() => {
+    props.onUpdateActiveChat({
+      id: chats[index]?.id,
+      title: chats[index]?.chatHistory[0]?.content,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  useEffect(() => {
     chatsRef.current = chats;
     debouncedSaveChats(chats);
     props.onUpdateTitle(chats);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chats]);
 
   const addChat = () => {
