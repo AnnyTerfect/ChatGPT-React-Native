@@ -29,7 +29,7 @@ const Drawer = props => {
       <Text style={styles.title}>Chat List</Text>
       <ScrollView>
         <List.Section>
-          {props.chats.map(chat => (
+          {[].map(chat => (
             <List.Item
               style={
                 props.activeChatId === chat.id
