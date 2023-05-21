@@ -66,6 +66,7 @@ const ChatTabView = forwardRef((props, ref) => {
   useEffect(() => {
     chatsRef.current = chats;
     debouncedSaveChats(chats);
+    props.onUpdateTitle(chats);
   }, [chats]);
 
   const addChat = () => {
@@ -87,6 +88,10 @@ const ChatTabView = forwardRef((props, ref) => {
     setIndex(chats.findIndex(chat => chat.id === id));
   };
 
+  const handleUpdateTitle = () => {
+    props.onUpdateTitle(chats);
+  };
+
   const handleUpdateChatHistory = (id, chatHistory) => {
     debouncedSetChats(_chats =>
       _chats.map(chat => {
@@ -106,6 +111,7 @@ const ChatTabView = forwardRef((props, ref) => {
         chatHistory={chat.chatHistory}
         APIKey={props.APIKey}
         deleteChat={() => deleteChat(chat.id)}
+        onUpdateTitle={handleUpdateTitle}
         onUpdateChatHistory={chatHistory =>
           handleUpdateChatHistory(chat.id, chatHistory)
         }

@@ -13,6 +13,7 @@ const App = () => {
   const [APIKey, setAPIKey] = useState('');
 
   const drawerRef = useRef(null);
+  const drawerLayoutRef = useRef(null);
   const tabViewRef = useRef(null);
   const dialogRef = useRef(null);
 
@@ -31,11 +32,11 @@ const App = () => {
   };
 
   const openDrawer = () => {
-    drawerRef.current && drawerRef.current.openDrawer();
+    drawerLayoutRef.current && drawerLayoutRef.current.openDrawer();
   };
 
   const closeDrawer = () => {
-    drawerRef.current && drawerRef.current.closeDrawer();
+    drawerLayoutRef.current && drawerLayoutRef.current.closeDrawer();
   };
 
   const addChat = () => {
@@ -57,14 +58,19 @@ const App = () => {
     saveAPIKey(_APIKey);
   };
 
+  const handleUpdateTitle = chats => {
+    drawerRef.current.setChats(chats);
+  };
+
   return (
     <DrawerLayoutAndroid
-      ref={drawerRef}
+      ref={drawerLayoutRef}
       style={theme.dark ? styles.layoutDark : styles.layoutLight}
       drawerWidth={300}
       drawerPosition="left"
       renderNavigationView={() => (
         <Drawer
+          ref={drawerRef}
           closeDrawer={closeDrawer}
           addChat={id => addChat(id)}
           deleteChat={id => deleteChat(id)}
@@ -82,7 +88,11 @@ const App = () => {
         ref={dialogRef}
         onSubmitKey={handleSubmitKey}
       />
-      <ChatTabView ref={tabViewRef} APIKey={APIKey} />
+      <ChatTabView
+        ref={tabViewRef}
+        APIKey={APIKey}
+        onUpdateTitle={handleUpdateTitle}
+      />
     </DrawerLayoutAndroid>
   );
 };

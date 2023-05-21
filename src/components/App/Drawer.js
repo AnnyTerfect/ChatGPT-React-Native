@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import { Button, IconButton, List } from 'react-native-paper';
 import { useTheme } from 'react-native-paper';
@@ -17,8 +17,14 @@ const getDeleteButton = deleteChat => props =>
     />
   );
 
-const Drawer = props => {
+const Drawer = forwardRef((props, ref) => {
   const theme = useTheme();
+
+  const [chats, setChats] = React.useState([]);
+
+  useImperativeHandle(ref, () => ({
+    setChats,
+  }));
 
   return (
     <View
@@ -29,7 +35,7 @@ const Drawer = props => {
       <Text style={styles.title}>Chat List</Text>
       <ScrollView>
         <List.Section>
-          {[].map(chat => (
+          {chats.map(chat => (
             <List.Item
               style={
                 props.activeChatId === chat.id
@@ -60,7 +66,7 @@ const Drawer = props => {
       </ScrollView>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
