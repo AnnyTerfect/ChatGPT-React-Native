@@ -8,24 +8,17 @@ const ChatTabView = props => {
   const theme = useTheme();
 
   const initialLayout = { width: Dimensions.get('window').width };
-  const renderScene = useMemo(() => {
-    return SceneMap(
-      Object.fromEntries([
-        ...props.chats.map(chat => [
-          chat.id,
-          () => (
-            <Chat
-              id={chat.id}
-              chatHistory={chat.chatHistory}
-              APIKey={props.APIKey}
-              deleteChat={() => props.deleteChat(chat.id)}
-            />
-          ),
-        ]),
-      ]),
+  const renderScene = ({ route }) => {
+    const chat = props.chats.find(_chat => _chat.id === route.key);
+    return (
+      <Chat
+        id={chat.id}
+        chatHistory={chat.chatHistory}
+        APIKey={props.APIKey}
+        deleteChat={() => props.deleteChat(chat.id)}
+      />
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.chats]);
+  };
 
   return (
     <TabView
